@@ -1,13 +1,17 @@
 import React from 'react';
 import { CardMedia, CardContent, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductCard({ product }) {
+  console.log("liste des produits", product)
+  const navigate = useNavigate()
   return (
     <div sx={{ maxWidth: 400 }}>
       <CardMedia
         component="img"
         image={product.image_url || '/default-image.jpg'}
         alt={product.name}
+        onClick={() => navigate(`/product/${product.id}`)}
       />
       <CardContent sx={{ textAlign: 'left', pl: 1 }}>
         <Typography
