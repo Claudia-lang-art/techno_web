@@ -4,6 +4,8 @@ import express from 'express';
 import cors from 'cors';
 import productRoutes from './routes/products.js'; // 🛠️ IMPORT DES ROUTES
 
+
+
 dotenv.config();
 
 // ✅ Création de l'application Express
@@ -16,6 +18,7 @@ app.use(express.json());
 
 // ✅ Définition des routes APRÈS l'initialisation de `app`
 app.use('/products', productRoutes);
+app.use('/images', express.static('public/images'));
 
 app.get('/', (req, res) => {
   res.send('Backend fonctionne ! 🚀');
