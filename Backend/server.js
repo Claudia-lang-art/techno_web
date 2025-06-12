@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import productRoutes from './routes/products.js'; // 🛠️ IMPORT DES ROUTES
+import productRoutes from './routes/products.js'; 
+import cartRoutes from './routes/cart.js'; 
 
 
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // ✅ Définition des routes APRÈS l'initialisation de `app`
 app.use('/products', productRoutes);
+app.use('/cart', cartRoutes);
 app.use('/images', express.static('public/images'));
 
 app.get('/', (req, res) => {

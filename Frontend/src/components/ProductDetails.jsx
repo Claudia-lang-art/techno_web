@@ -53,10 +53,52 @@ const ProductDetails = () => {
     }
   };
 
-  const handleAddToCart = () => {
-    console.log(`Added to cart: ${product.category}, Quantity: ${quantity}`);
+  const handleAddToCart = async () => {
+    try {
+      if (!product?.id) {
+        throw new Error('Product information is missing');
+      }
+      if (quantity < 1 || (product.stock && quantity > product.stock)) {
+        throw new Error('Invalid quantity selected');
+      }
+  
+      console.log('Sending to cart:', { 
+        user_id: 1, 
+        product_id: product.id, 
+        quantity 
+      });
+  
+      const response = await fetch('http://localhost:5000/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: 1, // À remplacer par l'ID utilisateur dynamique en production
+          product_id: product.id,
+          quantity: quantity
+        })
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMsg = errorData.error || `Server error: ${response.status}`;
+        throw new Error(errorMsg);
+      }
+  
+      const data = await response.json();
+      console.log('Server response:', data);
+      alert('Product added to cart successfully!');
+      
+    } catch (error) {
+      console.error('Add to cart failed:', {
+        error: error.message,
+        productId: product?.id,
+        quantity
+      });
+      alert(`Failed to add to cart: ${error.message}`);
+    }
   };
-
   const handlePrevious = () => {
     const newIndex = currentIndex > 0 ? currentIndex - 1 : products.length - 1;
     navigate(`/product/${products[newIndex].id}`);
@@ -320,7 +362,7 @@ const ProductDetails = () => {
           >
             <img
               src={
-                product.image_url || "http://localhost:4000/uploads/img_4.png"
+                product.image_url
               }
               alt={product.description}
               style={{
@@ -380,7 +422,7 @@ const ProductDetails = () => {
           elevation={0}
           sx={{
             width: 528,
-            height: 443,
+            height: 350,
             p: 4,
             bgcolor: "white",
             borderRadius: "20px",
@@ -440,6 +482,7 @@ const ProductDetails = () => {
                     minWidth: 0,
                     px: 2,
                     py: 1,
+                    mb:4,
                     fontWeight: 700,
                     fontSize: "1.125rem",
                     color: "#201B21",
